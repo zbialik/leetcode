@@ -74,30 +74,26 @@ class Solution:
 
         # 2. recursion:
         def move(guessPointer: int) -> bool: # returns True when reached winning game
-            if len(unfilledCellPositions) == 0:
+            if len(unfilledCellPositions) == 0: # WIN !!
                 return True # accounts for when function is first entered with already solved game
             
             cellLocation = unfilledCellPositions.pop() # [i,j] for cell to assign digit
             i = cellLocation[0]; j = cellLocation[1]
             possibleDigits = getPossibleDigits(i, j)
             
-            if guessPointer < len(possibleDigits): # WIN !!
-                board[i][j] = possibleDigits[guessPointer] # assign cell
-                return True
+            if guessPointer >= len(possibleDigits): # INVALID MOVE
+                unfilledCellPositions.append(cellLocation) # revert pop
+                board[i][j] = '.'
+                return False
             else:
-                if guessPointer >= len(possibleDigits): # INVALID MOVE
-                    unfilledCellPositions.append(cellLocation) # revert pop
+                board[i][j] = possibleDigits[guessPointer] # assign cell
+                valid = move(0)
+                if not valid: # recurse and check next move
                     board[i][j] = '.'
-                    return False
+                    unfilledCellPositions.append(cellLocation) # revert pop
+                    return move(guessPointer + 1)
                 else:
-                    board[i][j] = possibleDigits[guessPointer] # assign cell
-                    valid = move(0)
-                    if not valid: # recurse and check next move
-                        board[i][j] = '.'
-                        unfilledCellPositions.append(cellLocation) # revert pop
-                        return move(guessPointer + 1)
-                    else:
-                        return True
+                    return True
         
         # MAIN PROCESS
         fillRequiredDigits() # first clean board
@@ -126,7 +122,13 @@ else:
 
 
 b2 = [[".",".","9","7","4","8",".",".","."],["7",".",".",".",".",".",".",".","."],[".","2",".","1",".","9",".",".","."],[".",".","7",".",".",".","2","4","."],[".","6","4",".","1",".","5","9","."],[".","9","8",".",".",".","3",".","."],[".",".",".","8",".","3",".","2","."],[".",".",".",".",".",".",".",".","6"],[".",".",".","2","7","5","9",".","."]]
+
+for row in b2:
+    print(row)
+print()
 solution.solveSudoku(board=b2)
+for row in b2:
+    print(row)
 if b2 != check:
     print('fail')
 else:

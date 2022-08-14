@@ -23,7 +23,7 @@ class Solution:
             7: [6, 8],
             8: [6, 8]
         }
-        unfilledCellPositions = []
+        unfilledCellPositions:List[List[int]] = []
 
         """
         Do not return anything, modify board in-place instead.
@@ -74,34 +74,34 @@ class Solution:
 
         # 2. recursion:
         def move(guessPointer: int) -> bool: # returns True when reached winning game
+            if len(unfilledCellPositions) <= 1:
+                print('hi')
             cellLocation = unfilledCellPositions.pop() # [i,j] for cell to assign digit
             i = cellLocation[0]; j = cellLocation[1]
             possibleDigits = getPossibleDigits(i, j)
-
-            if len(possibleDigits) == 1:
-                board[i][j] = possibleDigits[0]
-                if len(unfilledCellPositions) == 0: # WIN
-                    return True
             
-            if len(possibleDigits) == 0: # RETURN WRONG GUESS
-                return False
+            if len(unfilledCellPositions) == 0 and guessPointer < len(possibleDigits): # WIN !!
+                board[i][j] = possibleDigits[guessPointer] # assign cell
+                return True
             else:
-                board[i][j] = possibleDigits[guessPointer]
-                if not move(guessPointer): # RECEIVED WRONG GUESS - REVERT CHANGES
+                if guessPointer >= len(possibleDigits): # INVALID MOVE
+                    unfilledCellPositions.append(cellLocation) # revert pop
                     board[i][j] = '.'
-                    unfilledCellPositions.append(cellLocation) 
-                    if guessPointer + 1 == len(possibleDigits): # RETURN WRONG GUESS
-                        return False
+                    return False
+                else:
+                    board[i][j] = possibleDigits[guessPointer] # assign cell
+                    valid = move(0)
+                    if not valid: # recurse and check next move
+                        board[i][j] = '.'
+                        unfilledCellPositions.append(cellLocation) # revert pop
+                        return move(guessPointer + 1)
                     else:
-                        return move(guessPointer+1)
-                else: 
-                    return move(0)
+                        return move(0)
         
         # MAIN PROCESS
         fillRequiredDigits() # first clean board
 
         # get list of cells 
-        unfilledCellPositions = []
         for i, j in itertools.product(range(9), range(9)):
             if board[i][j] == '.':
                 unfilledCellPositions.append([i,j]) # append cell

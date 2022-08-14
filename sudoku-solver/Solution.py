@@ -74,13 +74,14 @@ class Solution:
 
         # 2. recursion:
         def move(guessPointer: int) -> bool: # returns True when reached winning game
-            if len(unfilledCellPositions) <= 1:
-                print('hi')
+            if len(unfilledCellPositions) == 0:
+                return True # accounts for when function is first entered with already solved game
+            
             cellLocation = unfilledCellPositions.pop() # [i,j] for cell to assign digit
             i = cellLocation[0]; j = cellLocation[1]
             possibleDigits = getPossibleDigits(i, j)
             
-            if len(unfilledCellPositions) == 0 and guessPointer < len(possibleDigits): # WIN !!
+            if guessPointer < len(possibleDigits): # WIN !!
                 board[i][j] = possibleDigits[guessPointer] # assign cell
                 return True
             else:
@@ -96,7 +97,7 @@ class Solution:
                         unfilledCellPositions.append(cellLocation) # revert pop
                         return move(guessPointer + 1)
                     else:
-                        return move(0)
+                        return True
         
         # MAIN PROCESS
         fillRequiredDigits() # first clean board
@@ -114,19 +115,19 @@ class Solution:
 
 
 # example
-board = [[".",".","9","7","4","8",".",".","."],["7",".",".",".",".",".",".",".","."],[".","2",".","1",".","9",".",".","."],[".",".","7",".",".",".","2","4","."],[".","6","4",".","1",".","5","9","."],[".","9","8",".",".",".","3",".","."],[".",".",".","8",".","3",".","2","."],[".",".",".",".",".",".",".",".","6"],[".",".",".","2","7","5","9",".","."]]
+b1 = [["5","3",".",".","7",".",".",".","."],["6",".",".","1","9","5",".",".","."],[".","9","8",".",".",".",".","6","."],["8",".",".",".","6",".",".",".","3"],["4",".",".","8",".","3",".",".","1"],["7",".",".",".","2",".",".",".","6"],[".","6",".",".",".",".","2","8","."],[".",".",".","4","1","9",".",".","5"],[".",".",".",".","8",".",".","7","9"]]
 check = [["5","3","4","6","7","8","9","1","2"],["6","7","2","1","9","5","3","4","8"],["1","9","8","3","4","2","5","6","7"],["8","5","9","7","6","1","4","2","3"],["4","2","6","8","5","3","7","9","1"],["7","1","3","9","2","4","8","5","6"],["9","6","1","5","3","7","2","8","4"],["2","8","7","4","1","9","6","3","5"],["3","4","5","2","8","6","1","7","9"]]
 solution = Solution()
-print("INPUT:")
-for row in board:
-    print(row)
-print()
-solution.solveSudoku(board = board)
-print("OUTPUT:")
-for row in board:
-    print(row)
+solution.solveSudoku(board=b1)
+if b1 != check:
+    print('fail')
+else:
+    print('pass')
 
-if board != check:
+
+b2 = [[".",".","9","7","4","8",".",".","."],["7",".",".",".",".",".",".",".","."],[".","2",".","1",".","9",".",".","."],[".",".","7",".",".",".","2","4","."],[".","6","4",".","1",".","5","9","."],[".","9","8",".",".",".","3",".","."],[".",".",".","8",".","3",".","2","."],[".",".",".",".",".",".",".",".","6"],[".",".",".","2","7","5","9",".","."]]
+solution.solveSudoku(board=b2)
+if b2 != check:
     print('fail')
 else:
     print('pass')
